@@ -1,0 +1,216 @@
+/* ================= ROOT VARIABLES ================= */
+:root {
+  --navy: #0a1f44;
+  --navy-light: #12336f;
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --accent: #4f7cff;
+}
+
+/* ================= RESET ================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f9fbff);
+  color: #1f2937;
+}
+
+/* ================= MAIN CONTAINER ================= */
+.container {
+  max-width: 720px;
+  margin: 5vh auto;
+  background: var(--card);
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(10, 31, 68, 0.15);
+  animation: fadeIn 0.6s ease;
+  position: relative;
+}
+
+/* ================= HEADINGS ================= */
+h1 {
+  text-align: center;
+  color: var(--navy);
+  margin-bottom: 28px;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+/* ================= UPLOAD ================= */
+.upload-box {
+  border: 2px dashed var(--navy);
+  padding: 26px;
+  text-align: center;
+  margin-bottom: 22px;
+  border-radius: 10px;
+  background: #f9fbff;
+  transition: 0.3s;
+}
+
+.upload-box:hover {
+  background: #eef3ff;
+  border-color: var(--accent);
+}
+
+/* ================= TEXTAREA ================= */
+textarea {
+  width: 100%;
+  height: 140px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  margin-bottom: 22px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,124,255,.2);
+}
+
+/* ================= BUTTONS ================= */
+button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  color: white;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform .15s, box-shadow .15s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(10,31,68,.3);
+}
+
+button:active {
+  transform: scale(.96);
+}
+
+button:disabled {
+  background: #9aa4bf;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ================= RESULT ================= */
+.result {
+  margin-top: 28px;
+  background: linear-gradient(135deg, #eef3ff, #ffffff);
+  padding: 22px;
+  border-radius: 12px;
+  animation: slideUp .4s ease;
+}
+
+/* ================= AUTH OVERLAY ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+/* ================= AUTH WINDOWS ================= */
+.auth-window {
+  background: white;
+  width: 320px;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.3);
+  animation: authIn .6s ease;
+}
+
+.auth-window h2 {
+  margin-top: 0;
+  text-align: center;
+  color: var(--navy);
+}
+
+.auth-window input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.auth-window input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,124,255,.2);
+}
+
+/* ================= OTP MODAL ================= */
+.otp-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  animation: scaleIn .4s ease;
+}
+
+.otp-modal input {
+  width: 200px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+/* ================= USER ICON ================= */
+.user-icon {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.15);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .modal {
+    flex-direction: column;
+  }
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes authIn {
+  from { opacity: 0; transform: translateY(30px) scale(.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
