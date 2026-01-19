@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ATS Resume Checker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div id="authOverlay" class="modal">
+
+  <!-- SIGNUP POPUP -->
+  <div class="auth-window">
+    <h2>Sign Up</h2>
+    <input id="suFirst" placeholder="First Name">
+    <input id="suLast" placeholder="Last Name">
+    <input id="suEmail" placeholder="Email">
+    <button onclick="signup()">Sign Up</button>
+  </div>
+
+  <!-- LOGIN POPUP -->
+  <div class="auth-window">
+    <h2>Sign In</h2>
+    <input id="siEmail" placeholder="Email">
+    <button onclick="signin()">Sign In</button>
+  </div>
+
+</div>
+
+<!-- OTP POPUP -->
+<div id="otpModal" class="otp-modal" style="display:none;">
+  <h3>Enter OTP</h3>
+  <input id="otp" placeholder="6-digit OTP">
+  <button onclick="verifyOTP()">Verify</button>
+</div>
+
+<!-- HOME -->
+<div id="mainSite" class="container" style="display:none; position:relative;">
+  <div class="user-icon" onclick="openAccount()">👤</div>
+
+  <h1>ATS Resume Checker</h1>
+
+  <div class="upload-box">
+    <input type="file" id="resume">
+  </div>
+
+  <textarea id="jd" placeholder="Paste Job Description"></textarea>
+  <button onclick="checkATS()">Check ATS Score</button>
+  <div id="result"></div>
+</div>
+
+<!-- ACCOUNT -->
+<div id="accountPage" class="container" style="display:none;">
+  <h1>My Account</h1>
+  <p><b>Name:</b> <span id="accName"></span></p>
+  <p><b>Email:</b> <span id="accEmail"></span></p>
+  <p><b>Remaining Checks:</b> <span id="accChecks"></span></p>
+  <button onclick="logout()">Logout</button>
+  <button onclick="goHome()">Back</button>
+</div>
+
+<script>
+let currentUserEmail = "";
+
+/* SIGNUP */
+async function signup() {
+  const firstName = suFirst.value.trim();
+  const lastName = suLast.value.trim();
+  const email = suEmail.value.trim();
+
+  const res = await fetch("http://localhost:5000/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ firstName, lastName, email })
+  });
+
+  if (!res.ok) return alert("Signup failed");
+  currentUserEmail = email;
+  authOverlay.style.display = "none";
+  otpModal.style.display = "block";
+}
+
+/* LOGIN */
+async function signin() {
+  const email = siEmail.value.trim();
+
+  const res = await fetch("http://localhost:5000/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+
+  if (!res.ok) return alert("Login failed");
+  currentUserEmail = email;
+  authOverlay.style.display = "none";
+  otpModal.style.display = "block";
+}
+
+/* OTP VERIFY */
+async function verifyOTP() {
+  const res = await fetch("http://localhost:5000/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: currentUserEmail, otp: otp.value })
+  });
+
+  if (!res.ok) return alert("Invalid OTP");
+
+  otpModal.style.display = "none";
+  mainSite.style.display = "block";
+}
+
+/* ATS */
+async function checkATS() {
+  const file = resume.files[0];
+  const jdText = jd.value.trim();
+  if (!file || !jdText) return alert("Resume and JD required");
+
+  const fd = new FormData();
+  fd.append("resume", file);
+  fd.append("jd", jdText);
+  fd.append("email", currentUserEmail);
+
+  const res = await fetch("http://localhost:5000/analyze", {
+    method: "POST",
+    body: fd
+  });
+
+  const data = await res.json();
+  if (!res.ok) return alert(data.error);
+
+  result.innerHTML = `<p><b>ATS Score:</b> ${data.score}%</p>`;
+}
+
+/* ACCOUNT */
+async function openAccount() {
+  const res = await fetch(
+    `http://localhost:5000/account/${encodeURIComponent(currentUserEmail)}`
+  );
+  const data = await res.json();
+
+  accName.innerText = data.name;
+  accEmail.innerText = data.email;
+  accChecks.innerText = data.remaining;
+
+  mainSite.style.display = "none";
+  accountPage.style.display = "block";
+}
+
+function goHome() {
+  accountPage.style.display = "none";
+  mainSite.style.display = "block";
+}
+
+/* LOGOUT */
+function logout() {
+  currentUserEmail = "";
+  accountPage.style.display = "none";
+  authOverlay.style.display = "flex";
+}
+</script>
+
+</body>
+</html>
