@@ -122,7 +122,7 @@ async function checkATS() {
   fd.append("jd", jdText);
   fd.append("email", currentUserEmail);
 
-  const res = await fetch("http://localhost:5000/analyze", {
+  const res = await fetch("https://ats-backend-hoqv.onrender.com", {
     method: "POST",
     body: fd
   });
